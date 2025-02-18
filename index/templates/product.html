@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product }}</title>
+</head>
+<body>
+<h1>{{ product.product_name }}</h1>
+<br>
+<h3>Описание: {{ product.product_des }}</h3>
+<br>
+<h3>Количество: {{ product.product_count }}</h3>
+<br>
+<h3>Цена: ${{ product.product_price }}</h3>
+<br>
+<a href="/category/{{ product.product_category.id }}">{{ product.product_category }}</a>
+</body>
+</html>
