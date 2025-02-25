@@ -50,11 +50,12 @@
     <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
         {% for p in products %}
       <div class="feature col">
-        <h3 class="text-white fs-2">{{ p.product_name }}</h3>
-        <p class="text-white">{{ p.product_des }}</p>
-        <a href="/product/{{ p.id }}" class="icon-link">
-          Подробнее
-        </a>
+          <img src="{{ p.product_photo.url }}" width="250" height="250" alt="">
+          <h3 class="text-white fs-2">{{ p.product_name }}</h3>
+          <p class="text-white">{{ p.product_des }}</p>
+          <a href="/product/{{ p.id }}" class="icon-link">
+              Подробнее
+          </a>
       </div>
         {% endfor %}
     </div>
