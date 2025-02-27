@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
-from .models import Category, Product
+from .models import Category, Product, Cart
 from .forms import RegForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.views import View
+import telebot
+
+
+# Создаем объект бота
+bot = telebot.TeleBot('TOKEN')
 
 
 # Create your views here.
@@ -85,4 +90,59 @@ class Register(View):
             return redirect('/')
 
 
+# Выход из аккаунта
+def logout_view(request):
+    logout(request)
+    return redirect('/')
 
+
+# Добавление товара в корзину
+def to_cart(request, pk):
+    if request.method == 'POST':
+        product = Product.objects.get(id=pk)
+        if 1 < int(request.POST.get('pr_count')) <= product.product_count:
+            Cart.objects.create(user_id=request.user.id,
+                                user_product=product,
+                                user_pr_count=int(request.POST.get('pr_count'))).save()
+
+            return redirect('/')
+
+
+# Удаление товара из корзины
+def del_from_cart(request, pk):
+    product_to_del = Product.objects.get(id=pk)
+    Cart.objects.filter(user_product=product_to_del).delete()
+
+    return redirect('/cart')
+
+
+# Отображение корзины
+def cart(request):
+    user_cart = Cart.objects.filter(user_id=request.user.id)
+
+    product_ids = [p.user_product.id for p in user_cart]
+    product_counts = [p.user_product.product_count for p in user_cart]
+    user_pr_counts = [p.user_pr_count for p in user_cart]
+
+    totals = [round(t.user_pr_count * t.user_product.product_price, 2) for t in user_cart]
+    text = (f'Новый заказ!\n\n'
+            f'Клиент: {User.objects.get(id=request.user.id).email}\n\n')
+
+
+    if request.method == 'POST':
+        for i in range(len(product_ids)):
+            product = Product.objects.get(id=product_ids[i])
+            product.product_count = product_counts[i] - user_pr_counts[i]
+            product.save(update_fields=['product_count'])
+
+        for t in user_cart:
+            text += (f'Товар: {t.user_product}\n'
+                     f'Количество: {t.user_pr_count}\n\n')
+
+        text += f'Итого: ${round(sum(totals, 2))}'
+        bot.send_message('your_id', text)
+        user_cart.delete()
+        return redirect('/')
+
+    context = {'cart': user_cart, 'total': round(sum(totals, 2))}
+    return render(request, 'cart.html', context)

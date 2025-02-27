@@ -22,10 +22,17 @@
           <input type="search" class="form-control form-control-dark text-dark" placeholder="Поиск..." name="search_product" aria-label="Search">
         </form>
 
-        <div class="text-end">
-          <button type="button" class="btn btn-outline-light me-2">Login</button>
-          <button type="button" class="btn btn-warning">Sign-up</button>
-        </div>
+        {% if user.is_authenticated %}
+            <div class="text-end">
+                <button type="button" class="btn btn-primary"><a href="/cart" class="text-white text-decoration-none">Корзина</a></button>
+                <button type="button" class="btn btn-warning"><a href="/logout" class="text-dark text-decoration-none">Выйти</a></button>
+            </div>
+          {% else %}
+            <div class="text-end">
+              <button type="button" class="btn btn-primary"><a href="/accounts/login" class="text-white text-decoration-none">Войти</a></button>
+              <button type="button" class="btn btn-warning"><a href="/register" class="text-dark text-decoration-none">Регистрация</a></button>
+            </div>
+        {% endif %}
       </div>
     </div>
 </header>
