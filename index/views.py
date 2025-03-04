@@ -8,7 +8,7 @@ import telebot
 
 
 # Создаем объект бота
-bot = telebot.TeleBot('TOKEN')
+bot = telebot.TeleBot('7805051129:AAG4As3B6rEmKfsfpJ5r7TTYrUIBho9A9jQ')
 
 
 # Create your views here.
@@ -100,12 +100,13 @@ def logout_view(request):
 def to_cart(request, pk):
     if request.method == 'POST':
         product = Product.objects.get(id=pk)
-        if 1 < int(request.POST.get('pr_count')) <= product.product_count:
+        if 0 < int(request.POST.get('pr_count')) <= product.product_count:
             Cart.objects.create(user_id=request.user.id,
                                 user_product=product,
                                 user_pr_count=int(request.POST.get('pr_count'))).save()
 
             return redirect('/')
+        return redirect(f'/products/{pk}')
 
 
 # Удаление товара из корзины
@@ -140,7 +141,7 @@ def cart(request):
                      f'Количество: {t.user_pr_count}\n\n')
 
         text += f'Итого: ${round(sum(totals, 2))}'
-        bot.send_message('your_id', text)
+        bot.send_message(6775701667, text)
         user_cart.delete()
         return redirect('/')
 

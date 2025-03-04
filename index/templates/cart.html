@@ -44,16 +44,20 @@
   <br>
   <h3 class="text-white">Количество: {{ item.user_pr_count }}</h3>
   <br>
-  <h3 class="text-white">Сумма за товары: ${% widthratio item.user_product.product_count 1 item.user_pr_count %}</h3>
+  <h3 class="text-white">Сумма за товары: ${% widthratio item.user_product.product_price 1 item.user_pr_count %}</h3>
   <br>
   <form action="/del-from-cart/{{ item.user_product.id }}" method="post">
-    <button type="submit" class="btn btn-danger text-white">Удалить</button>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger text-white">Удалить</button>
   </form>
   {% endfor %}
   <br>
+    <h2 class="text-white">Доставка: $2</h2>
+    <br>
   <h2 class="text-white">Итого: ${{ total }}</h2>
   <form method="post">
-    <button type="submit" class="btn btn-success text-white">Оформить заказ</button>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success text-white">Оформить заказ</button>
   </form>
 </div>
 </body>
